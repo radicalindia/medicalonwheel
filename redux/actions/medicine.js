@@ -8,7 +8,7 @@ export const getMedicines = (body) => async (dispatch) => {
   const {data} = await http.get('/',{  params: {
     method,
   },});
-  console.log(data,"meds");
+  // console.log(data,"meds");
     try {
       dispatch({
         type: "GET_MEDICINE",

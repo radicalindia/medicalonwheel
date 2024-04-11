@@ -1,7 +1,8 @@
-import {View, Text, TextInput} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {globalStyles} from '../utils/GlobalStyles';
 import theme from '../utils/theme';
+import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 
 export const CustomTextInput = ({
   label,
@@ -9,18 +10,24 @@ export const CustomTextInput = ({
   setValue,
   placeholder,
   marginTop,
-  numeric
+  numeric,
+  secure,
+  iconName,
+  visible,
+  setVisible
 }) => {
   return (
-    <View style={{marginTop: marginTop}}>
+    <View style={{marginTop: marginTop,}}>
       <Text style={[globalStyles.text2, {opacity: 0.3, marginVertical: 5}]}>
         {label}
       </Text>
-      <TextInput
+     <View style={{flexDirection:"row",alignItems:"center"}}>
+     <TextInput
         value={value}
         placeholder={placeholder}
         onChangeText={e => setValue(e)}
         keyboardType={numeric}
+        secureTextEntry={visible}
         style={{
           width: '100%',
         //   borderRadius: 5,
@@ -34,6 +41,11 @@ export const CustomTextInput = ({
           color: 'black',
         }}
       />
+{      secure&&<TouchableOpacity onPress={()=>setVisible(!visible)}>
+  <Ionicons name={visible?"eye-off-sharp":"eye"} size={20} color="black" style={{marginLeft:-30}}/>
+</TouchableOpacity>
+}
+     </View>
     </View>
   );
 };

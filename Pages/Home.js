@@ -8,32 +8,40 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMedicines } from '../redux/actions/medicine';
 import { getCarts } from '../redux/actions/cart';
+import { http } from '../utils/AxiosInstance';
 
 
 
-const YourComponent = () => {
+const YourComponent = ({navigation}) => {
   const [search, setSearch] = useState();
   const medicines = useSelector(({medicine})=>medicine?.data?.response?.slice(0,4));
+  const [ homeData,setHomeData]=useState();
   // console.log("med",medicines);
   const [laoding,setLoading]=useState(false);
   const dispatch=useDispatch()
-
+  
   useEffect(()=>{
  const fetch=async()=>{
   try {
+    const {data}= await http.get("/",{params:{
+      method:"homeScreen"
+    }})
+    console.log("homepage",data?.package?.length)
+    setHomeData(data);
     setLoading(true);
+    console.log("hit")
     await dispatch(getMedicines());
      dispatch(getCarts())
     setLoading(false)  
   } catch (error) {
-    console.log(error)
+    console.log("home",error)
   }
   }
  fetch();
   },[]);
   const Renderitem = ({item}) => {
     return (
-      <View style={[styles.producBo]}>
+      <TouchableOpacity onPress={()=>navigation.navigate("MedicineIndex",{item:item})} style={[styles.producBo]}>
       {/* <Image style={{ width: 60, height: 20, marginLeft: 5, marginTop: 5 }} source={require("../assests/images/medical.png")} /> */}
       <Image style={{ height: 70, }} resizeMode='contain' source={{ uri:item.img }} />
       <Text style={{ color: "black", fontWeight: "bold", textAlign: "center", fontSize: 12 }}>{item.productName.substring(0,50)}</Text>
@@ -46,9 +54,23 @@ const YourComponent = () => {
         {/* <Text>100gm</Text> */}
       </View>
 
-    </View>
+    </TouchableOpacity>
     );
   };
+  const Renderitem2 = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={()=>navigation.navigate("PathalogyDetail",{id:item})} style={[styles.producBox]}>
+        <Image style={{ width: 90, height: 30, marginLeft: 5, marginTop: 5, marginBottom: 10, }} source={require("../assests/images/medical.png")} />
+
+        <Text style={{ color: "black", fontWeight: "bold" }}>{item.packageName}</Text>
+        {/* <Text style={{ color: "black", fontWeight: "bold", opacity: .5 }}>{item.discount}</Text> */}
+        <View style={{flexDirection:"row"}}>
+          <Text style={{fontSize:14,fontWeight:"bold"}}>₹ {item.packge_price-item.discount}</Text>
+          <Text style = {{  color: theme.colors.primaryOpacity,textDecorationLine:"line-through",marginLeft:10}}>{item.packge_price}</Text>
+        </View>     
+         </TouchableOpacity>
+    )
+  }
   return (
 
    <View style={{flex:1,backgroundColor:"white",}}>
@@ -70,61 +92,29 @@ const YourComponent = () => {
         />
       </View>
 
-      <HorizontalPhotoScrollView2 />
+      <HorizontalPhotoScrollView2 slider={homeData?.slider} />
 
       <Text style={[styles.text, globalStyles.text]}>Popular</Text>
       {laoding?<ActivityIndicator size={"large"} color={"black"} style={{marginTop:50,marginLeft:"auto",marginRight:"auto"}}/>:<FlatList
-        data={medicines}
+        data={homeData?.product?.response}
         renderItem={Renderitem}
         keyExtractor={(_, index) => index.toString()}
         numColumns={2}
       />}
 
       <Text style={[styles.text, globalStyles.text, { marginTop: "5%", marginBottom: 5 }]}>Lab Test Package</Text>
-      <ScrollView horizontal>
+       {laoding?<ActivityIndicator/>:<ScrollView contentContainerStyle={{paddingBottom:60}} horizontal>{homeData?.package?.map((item)=>(
+   <TouchableOpacity onPress={()=>navigation.navigate("PathalogyDetail",{id:item})} style={[styles.producBox]}>
+   <Image style={{ width: 90, height: 30, marginLeft: 5, marginTop: 5, marginBottom: 10, }} source={require("../assests/images/medical.png")} />
 
-        <View style={[styles.producBox]}>
-          <Image style={{ width: 90, height: 30, marginLeft: 5, marginTop: 5, marginBottom: 10 }} source={require("../assests/images/medical.png")} />
-
-          <Text style={{ color: "black", fontWeight: "bold" }}>Cardiac Risk Matters</Text>
-          <Text style={{ color: "black", fontWeight: "bold", opacity: .5 }}>Include 5 tests</Text>
-          <Text style={{ color: "black", fontWeight: "bold" }}>345</Text>
-
-
-          {/* <Text style={[{ color: "white", fontSize: 11 }, styles.medicalonwheel]}>Medical On Wheel</Text> */}
-        </View>
-        <View style={[styles.producBox]}>
-          <Image style={{ width: 90, height: 30, marginLeft: 5, marginTop: 5, marginBottom: 10 }} source={require("../assests/images/medical.png")} />
-
-          <Text style={{ color: "black", fontWeight: "bold" }}>Cardiac Risk Matters</Text>
-          <Text style={{ color: "black", fontWeight: "bold", opacity: .5 }}>Include 5 tests</Text>
-          <Text style={{ color: "black", fontWeight: "bold" }}>345</Text>
-
-
-          {/* <Text style={[{ color: "white", fontSize: 11 }, styles.medicalonwheel]}>Medical On Wheel</Text> */}
-        </View>
-        <View style={[styles.producBox]}>
-          <Image style={{ width: 90, height: 30, marginLeft: 5, marginTop: 5, marginBottom: 10 }} source={require("../assests/images/medical.png")} />
-
-          <Text style={{ color: "black", fontWeight: "bold" }}>Cardiac Risk Matters</Text>
-          <Text style={{ color: "black", fontWeight: "bold", opacity: .5 }}>Include 5 tests</Text>
-          <Text style={{ color: "black", fontWeight: "bold" }}>345</Text>
-
-
-          {/* <Text style={[{ color: "white", fontSize: 11 }, styles.medicalonwheel]}>Medical On Wheel</Text> */}
-        </View>
-        <View style={[styles.producBox]}>
-          <Image style={{ width: 90, height: 30, marginLeft: 5, marginTop: 5, marginBottom: 10 }} source={require("../assests/images/medical.png")} />
-
-          <Text style={{ color: "black", fontWeight: "bold" }}>Cardiac Risk Matters</Text>
-          <Text style={{ color: "black", fontWeight: "bold", opacity: .5 }}>Include 5 tests</Text>
-          <Text style={{ color: "black", fontWeight: "bold" }}>345</Text>
-
-
-          {/* <Text style={[{ color: "white", fontSize: 11 }, styles.medicalonwheel]}>Medical On Wheel</Text> */}
-        </View>
-
-      </ScrollView>
+   <Text style={{ color: "black", fontWeight: "bold" }}>{item.packgeName}</Text>
+   {/* <Text style={{ color: "black", fontWeight: "bold", opacity: .5 }}>{item.discount}</Text> */}
+   <View style={{flexDirection:"row"}}>
+     <Text style={{fontSize:14,fontWeight:"bold"}}>₹ {item.offerPrice}</Text>
+     <Text style = {{  color: theme.colors.primaryOpacity,textDecorationLine:"line-through",marginLeft:10}}>{item.mrp}</Text>
+   </View>     
+    </TouchableOpacity>
+            ))}</ScrollView>}
     </ScrollView>
    </View>
 
@@ -159,8 +149,8 @@ const styles = StyleSheet.create({
     paddingHorizontal:5
   },
   producBox: {
-    width: "23%",
-    height: 120,
+    width: 140,
+    // height: 120,
     marginRight: 10,
     borderRadius: 10,
     backgroundColor: "white",

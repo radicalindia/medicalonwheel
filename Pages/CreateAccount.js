@@ -63,19 +63,11 @@ const CreateAccount = () => {
     }
 
     return (
-        <ScrollView contentContainerStyle={{ padding: 20, backgroundColor: "white", }}>
+         <View style={{height:"100%",backgroundColor:"white"}}>
+                <ScrollView contentContainerStyle={{ padding: 20, backgroundColor: "white", }}>
             <Text style={[globalStyles.text, { fontSize: 22, marginTop: 20 }]}>Create Account!</Text>
             <Text style={[globalStyles.text2]}>Sign up to continue</Text>
-            <View style={[globalStyles.rowflex, { marginTop: 50 }]}>
-                <TouchableOpacity style={[styles.googleButton]}>
-                    <Image source={require("../assests/images/fb.png")} />
-                    <Text style={[styles.buttonText]}>Facebook</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.googleButton]}>
-                    <Image source={require("../assests/images/google.png")} />
-                    <Text style={[styles.buttonText]}>Google</Text>
-                </TouchableOpacity>
-            </View>
+         
             <CustomTextInput
                 label={"Name"}
                 value={name}
@@ -132,6 +124,7 @@ const CreateAccount = () => {
                 </TouchableOpacity>
             </View>
         </ScrollView>
+         </View>
     )
 }
 

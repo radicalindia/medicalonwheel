@@ -23,6 +23,17 @@ import PathologyDetail from './Pages/PathologyDetail';
 import CartProducts from './Pages/Cart';
 import Address from './Pages/Address';
 import MedicineIndex from './Pages/MedicineIndex';
+import SearchMedicine from './Pages/SearchMedicine';
+import SearchPathology from './Pages/SearchPathology';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import Fontist from 'react-native-vector-icons/Fontisto.js';
+import theme from './utils/theme';
+
+
+const Tab = createBottomTabNavigator();
+
 
 // const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -54,7 +65,9 @@ const App = () => {
   ];
   const NavbarAbsentScreensBottom = [
     "CreateAccount",
-    "Login"
+    "Login",
+    "MedicineSearch",
+    "PathalogySearch"
   ];
 
 
@@ -81,11 +94,11 @@ const App = () => {
     <>
       <NavigationContainer ref={navigationRef}>
         {/* {!NavbarAbsentScreens.includes(currentroute) && ((getUserType=="mine"||getUserType=="truckOwner")&&<AppBar />)} */}
-        {!NavbarAbsentScreensBottom.includes(currentroute) && <TopBar/>}
+        {!NavbarAbsentScreensBottom.includes(navigationRef.current?.getCurrentRoute()?.name) && <TopBar/>}
         {/* <TopBar /> */}
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="Tab">
           <Stack.Screen
-            name="Home"
+            name="Tab"
             component={Home}
             options={{ title: 'Welcome', headerShown: false }}
           />
@@ -124,6 +137,11 @@ const App = () => {
             component={Pathology}
             options={{ title: 'Welcome', headerShown: false }}
           />
+           <Stack.Screen
+            name="PathalogySearch"
+            component={SearchPathology}
+            options={{ title: 'Welcome', headerShown: false }}
+          />
           <Stack.Screen
             name="PathalogyDetail"
             component={PathologyDetail}
@@ -144,6 +162,11 @@ const App = () => {
             component={Medicine}
             options={{ title: 'Welcome', headerShown: false }}
           />
+          <Stack.Screen
+            name="MedicineSearch"
+            component={SearchMedicine}
+            options={{ title: 'Welcome', headerShown: false }}
+          />
            <Stack.Screen
             name="MedicineIndex"
             component={MedicineIndex}
@@ -153,10 +176,85 @@ const App = () => {
           {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
         </Stack.Navigator>
         {/* {!NavbarAbsentScreens.includes(currentroute) && (getUserType=="mine"?<BottomNav />:getUserType=="mineOwner"?<TruckOwner/>:<DriverBottomNav/>)} */}
-        {!NavbarAbsentScreensBottom.includes(currentroute) && <BottomNav />}
+        {!NavbarAbsentScreensBottom.includes(navigationRef.current?.getCurrentRoute()?.name) && <BottomNav />}
       </NavigationContainer>
       {/* <CurvedBottomBars/> */}
     </>
+  );
+};
+
+const TabNavigator = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={{tabBarStyle:{height:60}}}
+      tabBarOptions={{
+        activeTintColor: '#3498db',
+        inactiveTintColor: 'gray',
+      }}
+    >
+      {/* Define your screens and icons */}
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabel: ()=>null,
+          tabBarIcon: ({ color, size,focused }) => (
+            <MaterialCommunityIcons            
+               name="home"
+            color={focused?theme.colors.primaryOpacity:color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Medicine"
+        component={Medicine}
+        options={{
+          tabBarLabel: ()=>null,
+          tabBarIcon: ({ color, size ,focused}) => (
+            <FontAwesome
+               name="first-aid"
+            color={focused?theme.colors.primaryOpacity:color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Upload"
+        component={Upload}
+        options={{
+          tabBarLabel: ()=>null,
+          tabBarIcon: ({ color, size ,focused}) => (
+            <View style={{height:45,width:45,borderRadius:25,justifyContent:"center",alignItems:"center",backgroundColor:theme.colors.primaryOpacity,marginBottom:15}}>
+                  <MaterialCommunityIcons
+               name="plus-thick"
+            color={"white"} size={size} />
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Doctor"
+        component={Doctor}
+        options={{
+          tabBarLabel: ()=>null,
+          tabBarIcon: ({ color, size ,focused}) => (
+            <MaterialCommunityIcons    
+               name="doctor"
+            color={focused?theme.colors.primaryOpacity:color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Pathalogy"
+        component={Pathology}
+        options={{
+          tabBarLabel: ()=>null,
+          tabBarIcon: ({ color, size,focused }) => (
+            <Fontist name="test-bottle" color={focused?theme.colors.primaryOpacity:color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 

@@ -76,6 +76,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMedicines } from '../redux/actions/medicine';
 import { http } from '../utils/AxiosInstance';
 import { getCarts } from '../redux/actions/cart';
+import { addNavREf } from '../redux/actions/navigationREf';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const Medicine = ({navigation}) => {
@@ -86,7 +88,12 @@ const Medicine = ({navigation}) => {
     const cart = useSelector(({cart})=>cart?.data)
     console.log("cart",cart)
 
-
+    const focus = useIsFocused()
+    useEffect(()=>{
+      if(focus){
+        dispatch(addNavREf("Medicine"))
+      }
+    },[focus])
 
 
     // console.log(medi)
@@ -201,6 +208,10 @@ const Medicine = ({navigation}) => {
     </View>
     );
   };
+  const gottonex=async()=>{
+    await dispatch(addNavREf("Home"))
+    navigation.navigate("MedicineSearch"); 
+  }
   return (
     <View style={[globalStyles.container2]}>
       <View style={[globalStyles.rowflex, globalStyles.searchBox]}>
@@ -210,27 +221,19 @@ const Medicine = ({navigation}) => {
           placeholder="Search Medicine"
           value={searchMed}
           onChangeText={(e) => setSearch(e)}
+          onFocus={()=>gottonex()}
           placeholderTextColor={'#35383F'}
         />
       </View>
         
         {laoding?<ActivityIndicator size={"large"} color={"black"} style={{marginTop:50,marginLeft:"auto",marginRight:"auto"}}/>:
-        (!searchMed?<FlatList
+       <FlatList
         data={medicines}
         renderItem={Renderitem}
         keyExtractor={(_, index) => index.toString()}
         numColumns={2}
-      />:
-      <View style={{flex:1,backgroundColor:"white",height:Dimensions.get("window").height,position:"absolute",marginTop:100,width:Dimensions.get("window").width}}>
-         <FlatList
-        data={medicineSearchesData}
-        contentContainerStyle={{paddingBottom:150}}
-        renderItem={Renderitem2}
-        keyExtractor={(_, index) => index.toString()}
-        // numColumns={2}
       />
-      </View>
-      )}
+      }
   
 
       

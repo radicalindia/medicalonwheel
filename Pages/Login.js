@@ -17,6 +17,7 @@ const Login = ({navigation}) => {
     const [name, setName] = useState();
     const [email, setEmail] = useState('ashu@gmail.com');
     const [password, setPassword] = useState('123456');
+    const [ visible,setVisible]=useState(true);
     const dispactch=useDispatch()
 
     const login = async () => {
@@ -32,8 +33,8 @@ const Login = ({navigation}) => {
             console.log('Response:', response.data?.response);
               if(response?.data?.response?.userId){
                 AsyncStorage.setItem("user",JSON.stringify(response.data?.response));
-                await dispactch(addNavREf("Home"))
-                navigation.replace("Home");
+                await dispactch(addNavREf("Tab"))
+                navigation.replace("Tab");
               }
               else{
                 Alert.alert("Invalid Credentials")
@@ -47,19 +48,9 @@ const Login = ({navigation}) => {
     }
 
     return (
-        <ScrollView contentContainerStyle={{padding:15,backgroundColor:"white"}}>
-            <Text style={[globalStyles.text, { fontSize: 22, marginTop: 70 }]}>Welcome Back!</Text>
-            <Text style={[globalStyles.text2]}>Sign in to continue</Text>
-            <View style={[globalStyles.rowflex, { marginTop: 50 }]}>
-                <TouchableOpacity style={[styles.googleButton]}>
-                    <Image source={require("../assests/images/fb.png")} />
-                    <Text style={[styles.buttonText]}>Facebook</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.googleButton]}>
-                    <Image source={require("../assests/images/google.png")} />
-                    <Text style={[styles.buttonText]}>Google</Text>
-                </TouchableOpacity>
-            </View>
+        <ScrollView contentContainerStyle={{padding:15,backgroundColor:"white",height:'100%'}}>
+ 
+             
             {/* <CustomTextInput
      label={"Name"}
      value={name}
@@ -67,19 +58,27 @@ const Login = ({navigation}) => {
      placeholder={"Enter Your Name"}
      marginTop={"35%"}
      /> */}
+                         <Image source={require("../assests/images/medical.png")}  style={{width:240,height:150,marginTop:20,marginRight:"auto",marginLeft:"auto"}} resizeMode='contain'/>
+
+                         <Text style={[globalStyles.text, { fontSize: 22, marginTop: "25%" }]}>Welcome back!</Text>
+            <Text style={[globalStyles.text2]}>Sign In to continue</Text>
             <CustomTextInput
                 label={"Email Id"}
                 value={email}
                 setValue={setEmail}
                 placeholder={"Enter Your Email id"}
-                marginTop={"45%"}
+                marginTop={30}
             />  
             <CustomTextInput
                 label={"Password"}
                 value={password}
+                iconName={true}
+                secure={true}
+                visible={visible}
+                setVisible={setVisible}
                 setValue={setPassword}
                 placeholder={"Enter Password"}
-                marginTop={"5%"}
+                marginTop={15}
             />
             <TouchableOpacity style={{ marginLeft: "auto", marginTop: 20 }}><Text style={{ color: theme.colors.primaryOpacity }}>Forgot Password?</Text></TouchableOpacity>
             <CustomButton onPressfuntion={()=>login()} text={"Sign In"} marginTop={"20%"} />

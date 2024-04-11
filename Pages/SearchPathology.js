@@ -1,4 +1,4 @@
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity ,Image, ActivityIndicator, Dimensions, Alert} from 'react-native'
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity ,Image, ActivityIndicator, Dimensions, Alert, BackHandler} from 'react-native'
 import React ,{useEffect, useState}from 'react'
 import { globalStyles } from '../utils/GlobalStyles'
 import theme from '../utils/theme'
@@ -6,11 +6,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPathology } from '../redux/actions/pathology';
 import { http } from '../utils/AxiosInstance';
-import { addNavREf } from '../redux/actions/navigationREf';
 import { useIsFocused } from '@react-navigation/native';
+import { addNavREf } from '../redux/actions/navigationREf';
 
 
-const Pathology = ({navigation}) => {
+const SearchPathology = ({navigation}) => {
   // const [search, setSearch] = useState();
   const data = [{ name: "blood test ", value: "345", includes: "5 test" }, { name: "Complete check up ", value: "345", includes: "6 test" }]
   const pathologyList = useSelector((state)=>state.pathology?.data?.response);
@@ -19,13 +19,24 @@ const Pathology = ({navigation}) => {
   const [ searchData,setSearchData]=useState();
   const user = useSelector(({user})=>user?.data);
   const focus = useIsFocused()
-  useEffect(()=>{
-    if(focus){
-      dispatch(addNavREf("Medicine"))
-    }
-  },[focus])
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', async() => {
 
+       await dispatch(addNavREf("Home"))
+      navigation.navigate("Pathalogy");
+      // Optionally, return true to prevent the default back action
+      // return true;
+    });
 
+    // Clean up the event listener when the component is unmounted
+    return () => backHandler.remove();
+  }, []);
+
+  const getQtyCount=(id)=>{
+    const data= cart&&cart?.find((item)=>item.productId==id);
+    console.log(data,id)
+    return data
+}
   // console.log(pathologyList)
   const dispatch = useDispatch()
   useEffect(()=>{
@@ -122,10 +133,6 @@ const Pathology = ({navigation}) => {
          </TouchableOpacity>
     )
   }
-  const gottonex=async()=>{
-    await dispatch(addNavREf("Pathology"))
-    navigation.navigate("PathalogySearch"); 
-  }
   return (
     <View style={[globalStyles.container2]}>
           <View style={[globalStyles.rowflex, globalStyles.searchBox]}>
@@ -136,17 +143,11 @@ const Pathology = ({navigation}) => {
           value={searchMed}
           onChangeText={(e) => setSearch(e)}
           placeholderTextColor={'#35383F'}
-          onFocus={()=>gottonex()}
         />
       </View>
       
       {loading?<ActivityIndicator size={"large"} color={"black"} style={{marginTop:50,marginLeft:"auto",marginRight:"auto"}}/>:
-        (!searchMed?<FlatList
-        data={pathologyList}
-        renderItem={Renderitem}
-        keyExtractor={(_, index) => index.toString()}
-        numColumns={2}
-      />:
+
       <View style={{flex:1,backgroundColor:"white",height:Dimensions.get("window").height,width:Dimensions.get("window").width-20}}>
          <FlatList
         data={searchData}
@@ -156,7 +157,7 @@ const Pathology = ({navigation}) => {
         // numColumns={2}
       />
       </View>
-      )}
+      }
       
 
     </View>
@@ -184,4 +185,4 @@ const styles= StyleSheet.create({
       },
 })
 
-export default Pathology
+export default SearchPathology

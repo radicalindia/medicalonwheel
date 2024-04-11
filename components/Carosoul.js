@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollView, Image, StyleSheet, View, Dimensions ,Text} from 'react-native';
 
-const HorizontalPhotoScrollView2 = () => {
+const HorizontalPhotoScrollView2 = ({slider}) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const scrollViewRef = useRef(null);
   const { width } = Dimensions.get('window');
@@ -43,9 +43,9 @@ const HorizontalPhotoScrollView2 = () => {
         setCurrentImageIndex(imageIndex);
       }}
     >
-           {items.map((item, index) => (
+           {slider&&slider.map((item, index) => (
         <Image
-        source={{uri:item.uri}}
+        source={{uri:item}}
           key={index}
           style={[styles.item, { width: itemWidth, height: itemHeight, backgroundColor: item.color,borderRadius:10 }]}
         >
